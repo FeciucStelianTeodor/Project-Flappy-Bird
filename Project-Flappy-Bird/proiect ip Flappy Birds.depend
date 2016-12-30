@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1482941566 source:c:\codeblocks\proiect ip flappy birds\main.cpp
+	<iostream>
+	<conio.h>
+	<stdlib.h>
+	<windows.h>
+
