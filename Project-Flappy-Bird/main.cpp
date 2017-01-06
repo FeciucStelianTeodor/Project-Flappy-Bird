@@ -23,17 +23,146 @@ struct player
     bool powerup=false;
 };
 
-struct obstacle
+struct node
 {
-    unsigned x,y;
-    struct obstacle *next, *previous;
+    unsigned x,y,obstacleLenght;
+    node* next;
+    node* previous;
 };
 
-/*void AddValuePipe(pipe MovingPipe,unsigned value)
+struct ObstacleQueue
 {
-    if(MovingPipe)
-    }*/
-//void RandomxOyPipe()
+    node* first;
+    node* last;
+    unsigned int lenght;
+};
+
+void InitializeObstacleQueueu(ObstacleQueue& ObstacleAux)
+{
+    ObstacleAux.lenght = 0;
+    ObstacleAux.first = NULL;
+    ObstacleAux.last = NULL;
+}
+
+void AddPositionObstacleQueue(ObstacleQueue& ObstacleAux, unsigned PositionX, unsigned PositionY, unsigned LenghtOfObstacle)
+{
+    if (ObstacleAux.lenght == 0)
+    {
+        ObstacleAux.first = new node;
+        ObstacleAux.first->x = PositionX;
+        ObstacleAux.first->y=PositionY;
+        ObstacleAux.first->obstacleLenght=LenghtOfObstacle;
+        ObstacleAux.first->next = NULL;
+        ObstacleAux.first->previous = NULL;
+        ObstacleAux.last = ObstacleAux.first;
+        ObstacleAux.lenght++;
+    }
+    else
+    {
+        node* NodeAux;
+        NodeAux = new node;
+        NodeAux->x = PositionX;
+        NodeAux->y = PositionY;
+        NodeAux->obstacleLenght=LenghtOfObstacle;
+        NodeAux->next = NULL;
+        NodeAux->previous = ObstacleAux.last;
+        ObstacleAux.lenght++;
+        ObstacleAux.last->next = NodeAux;
+        ObstacleAux.last = NodeAux;
+    }
+}
+
+void DeletePositionObstacleQueue(ObstacleQueue ObstacleAux, unsigned elementPosition)
+{
+    node* NodeAux1 = ObstacleAux.first;
+    node* NodeAux2;
+    node* NodeAux3;
+    unsigned i;
+    for (i = 1; i <= elementPosition - 1; i++)
+        NodeAux1 = NodeAux1->next;
+    NodeAux2 = NodeAux1->previous;
+    NodeAux3 = NodeAux1->next;
+    NodeAux2->next = NodeAux3;
+    NodeAux3->previous = NodeAux2;
+    delete NodeAux1;
+    ObstacleAux.lenght--;
+}
+
+void RandomPositionObstacle(ObstacleQueue &Pipe)
+{
+    unsigned xPipeUp,xPipeDown,yPipeUp,yPipeDown,lengthPipeUp,lengthPipeDown;
+    xPipeDown=19;
+    xPipeUp=4;
+    yPipeDown=yPipeUp=69;
+    lengthPipeDown=rand()%7+1;
+    lengthPipeUp=7-lengthPipeDown;
+    AddPositionObstacleQueue(Pipe,xPipeDown,yPipeDown,lengthPipeDown);
+    AddPositionObstacleQueue(Pipe,xPipeUp,yPipeUp,lengthPipeUp);
+}
+
+void MoveObstacle(ObstacleQueue &Pipe)
+{   node* AuxNode=Pipe.first;
+    ObstacleQueue AuxObstacle;
+    InitializeObstacleQueueu(AuxObstacle);
+    unsigned i=0,LengthOfPipe=Pipe.lenght;
+    while(i<LengthOfPipe)
+    {
+        AddPositionObstacleQueue(AuxObstacle,AuxNode->x,AuxNode->y-1,AuxNode->obstacleLenght);
+        AuxNode=AuxNode->next;
+        i++;
+    }
+    Pipe=AuxObstacle;
+}
+
+void ClearObstacle(ObstacleQueue &Pipe)
+{
+    node* AuxNode=Pipe.first;
+    int i;
+    while(AuxNode!=NULL)
+    {
+        for(i=23; i>=19-AuxNode->obstacleLenght; i--)
+        {
+            cls(i,AuxNode->y-5);
+            cout<<"      ";
+        }
+        AuxNode=AuxNode->next;
+        for(i=1; i<=4+AuxNode->obstacleLenght; i++)
+        {
+            cls(i,AuxNode->y-5);
+            cout<<"      ";
+        }
+        AuxNode=AuxNode->next;
+    }
+    ObstacleQueue AuxPipe;
+    InitializeObstacleQueueu(AuxPipe);
+    RandomPositionObstacle(AuxPipe);
+    Pipe=AuxPipe;
+}
+
+void PrintObstacle(ObstacleQueue Pipe)
+{
+    node* AuxNode=Pipe.first;
+    int i;
+    while(AuxNode!=NULL)
+    {
+        for(i=23; i>=19-AuxNode->obstacleLenght; i--)
+        {
+            cls(i,AuxNode->y-4);
+            cout<<"     ";
+            cls(i,AuxNode->y-5);
+            cout<<"*****";
+        }
+        AuxNode=AuxNode->next;
+        for(i=1; i<=4+AuxNode->obstacleLenght; i++)
+        {
+            cls(i,AuxNode->y-4);
+            cout<<"     ";
+            cls(i,AuxNode->y-5);
+            cout<<"*****";
+        }
+        AuxNode=AuxNode->next;
+    }
+}
 
 void matricspace(char s[][110])
 {
@@ -143,10 +272,12 @@ void hidecursor()
 
 int main()
 {
-    char a[25][110]= {"^^^^","////"};
+    char a[25][110];
     player bird;
     hidecursor();
     matricspace(a);
-    gameplay(bird,a);
+    ObstacleQueue Pipe;
+    InitializeObstacleQueueu(Pipe);
+    gameplay(bird,a,Pipe);
     return 0;
 }
