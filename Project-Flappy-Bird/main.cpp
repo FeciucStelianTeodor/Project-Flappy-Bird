@@ -234,27 +234,28 @@ bool mutare(player &bird)
     return false;
 }
 
-void gameplay(player bird, char s[][110])
+void gameplay(player bird, char s[][110],ObstacleQueue &Pipe)
 {
     afisare(bird,s);
+    RandomPositionObstacle(Pipe);
     do
     {
         if(mutare(bird))
         {
-            /*cls(bird.x+2,bird.y);
-            cout<<" ";
-            cls(bird.x,bird.y);
-            cout<<"%";*/
-            clearbird(bird.x+2,bird.y);
+            clearbird(bird.x+4,bird.y);
             birdprint(bird.x,bird.y);
+            if(Pipe.first->y==6)
+                ClearObstacle(Pipe);
+            MoveObstacle(Pipe);
+            PrintObstacle(Pipe);
         }
-        Sleep(250);
-        /*cls(bird.x, bird.y);
-        cout<<" ";*/
+        Sleep(100);
+        if(Pipe.first->y==6)
+            ClearObstacle(Pipe);
+        MoveObstacle(Pipe);
+        PrintObstacle(Pipe);
         clearbird(bird.x,bird.y);
         bird.x++;
-        /*cls(bird.x, bird.y);
-        cout<<"%";*/
         birdprint(bird.x,bird.y);
     }
     while(!esc);
