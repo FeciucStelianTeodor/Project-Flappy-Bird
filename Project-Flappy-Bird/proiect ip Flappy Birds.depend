@@ -5,3 +5,12 @@
 	<stdlib.h>
 	<windows.h>
 
+1484246484 source:c:\codeblocks\project-flappy-bird\main.cpp
+	<iostream>
+	<conio.h>
+	<ctime>
+	<stdlib.h>
+	<windows.h>
+	<fstream>
+	<string.h>
+
